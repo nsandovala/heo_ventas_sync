@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__)
 
-DEEPSEEK_API_URL = os.getenv("DEEPSEEK_API_URL")
-DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL")
-DEEPSEEK_TEMP = float(os.getenv("DEEPSEEK_TEMP"))
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+MODEL = "deepseek-chat"  # o el que elijas (puede ser gpt-4, llama3, mixtral, etc.)
+TEMPERATURE = 0.7
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 @app.route("/", methods=["GET", "POST"])
@@ -21,19 +21,20 @@ def index():
             "Content-Type": "application/json"
         }
         payload = {
-            "model": DEEPSEEK_MODEL,
+            "model": MODEL,
             "messages": [
                 {"role": "system", "content": "Eres HEO, un asistente divertido y empático que ayuda a elegir hamburguesas temáticas."},
                 {"role": "user", "content": user_input}
             ],
-            "temperature": DEEPSEEK_TEMP
+            "temperature": TEMPERATURE
         }
         try:
-            response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload)
+            response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
             reply = response.json()["choices"][0]["message"]["content"]
         except Exception as e:
-            reply = f"Error en la respuesta: {e}"
+            reply = f"⚠️ Error en la respuesta: {e}"
     return render_template("index.html", reply=reply)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
