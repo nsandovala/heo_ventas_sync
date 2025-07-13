@@ -12,7 +12,7 @@ if not api_key:
 
 # === Configuración de OpenRouter ===
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "openai/gpt-3.5-turbo"
+MODEL = "meta-llama/llama-3-8b-instruct"
 
 
 headers = {
