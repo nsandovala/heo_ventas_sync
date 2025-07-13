@@ -14,12 +14,13 @@
             <input type="text" name="user_input" placeholder="¿Qué me recomiendas hoy?" required>
             <button type="submit">Hablar con HEO</button>
         </form>
-        {% if reply %}
-        <div class="response">
-            <h2>Respuesta de HEO:</h2>
-            <p>{{ reply }}</p>
-        </div>
-        {% endif %}
+      {% if heo_response %}
+<div class="response">
+  <h3>Respuesta de HEO:</h3>
+  <p>{{ heo_response }}</p>
+</div>
+{% endif %}
+
     </div>
 </body>
 </html>
