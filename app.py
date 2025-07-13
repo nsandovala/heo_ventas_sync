@@ -7,7 +7,7 @@ load_dotenv()
 app = Flask(__name__)
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "llama3"  # o el que elijas (puede ser gpt-4, llama3, mixtral, etc.)
+MODEL = "mistralai/mistral-7b-instruct"  # o el que elijas (puede ser gpt-4, llama3, mixtral, etc.)
 TEMPERATURE = 0.7
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 
