@@ -1,42 +1,57 @@
-
 from flask import Flask, render_template, request
-import requests, os
+import requests
+import os
 from dotenv import load_dotenv
 
+# === Cargar entorno ===
 load_dotenv()
-app = Flask(__name__)
+api_key = os.getenv("OPENROUTER_API_KEY")
 
+if not api_key:
+    raise EnvironmentError("❌ API KEY no encontrada. Configura OPENROUTER_API_KEY en el entorno.")
+
+# === Configuración de OpenRouter ===
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "mistralai/mistral-7b-instruct"  # o el que elijas (puede ser gpt-4, llama3, mixtral, etc.)
-TEMPERATURE = 0.7
-API_KEY = os.getenv("OPENROUTER_API_KEY")
+MODEL = "mistral:7b"
+
+headers = {
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json",
+    "HTTP-Referer": "http://localhost",  # Cambiar si vas a producción
+    "X-Title": "HEO Sync Ventas"
+}
+
+app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    reply = ""
+    heo_response = ""
     if request.method == "POST":
         user_input = request.form["user_input"]
-        headers = {
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json"
-        }
         payload = {
             "model": MODEL,
             "messages": [
-                {"role": "system", "content": "Eres HEO, un asistente divertido y empático que ayuda a elegir hamburguesas temáticas."},
+                {"role": "system", "content": "Eres HEO Sync, un asistente de ventas empático y creativo que recomienda productos, escucha al cliente y guía hacia lo más vendido según su ánimo o idea."},
                 {"role": "user", "content": user_input}
-            ],
-            "temperature": TEMPERATURE
+            ]
         }
+
         try:
-    response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
-    data = response.json()
-    if "choices" in data:
-        reply = data["choices"][0]["message"]["content"]
-    else:
-        reply = f"⚠️ Error: {data.get('error', 'Sin campo choices en la respuesta')}"
-except Exception as e:
-    reply = f"⚠️ Excepción en la respuesta: {str(e)}"
+            response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
+            data = response.json()
+
+            if "choices" in data:
+                heo_response = data["choices"][0]["message"]["content"]
+            elif "error" in data:
+                heo_response = f"⚠️ Error de API: {data['error'].get('message', str(data['error']))}"
+            else:
+                heo_response = "⚠️ Error inesperado: No se encontró el campo 'choices'."
+
+        except Exception as e:
+            heo_response = f"⚠️ Excepción: {str(e)}"
+
+    return render_template("index.html", heo_response=heo_response)
 
 if __name__ == "__main__":
     app.run(debug=True)
+
