@@ -12,13 +12,15 @@ if not api_key:
 
 # === Configuración de OpenRouter ===
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "mistral:7b"
+MODEL = "openai/gpt-3.5-turbo"
+
 
 headers = {
-    "Authorization": f"Bearer {api_key}",
-    "Content-Type": "application/json",
-    "HTTP-Referer": "http://localhost",  # Cambiar si vas a producción
-    "X-Title": "HEO Sync Ventas"
+   "Authorization": f"Bearer {api_key}",
+   "Content-Type": "application/json",
+   "HTTP-Referer": "https://heosync.cl",  # o tu dominio real
+   "X-Title": "HEO Sync Ventas"
+
 }
 
 app = Flask(__name__)
@@ -39,7 +41,8 @@ def index():
         try:
             response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
             data = response.json()
-            print("🧠 Respuesta JSON:", data)
+            print(f"🟢 Pregunta enviada: {user_input}")
+
             message = data.get("choices", [{}])[0].get("message", {}).get("content")
             heo_response = message if message else "⚠️ La IA no devolvió contenido."
         except Exception as e:
