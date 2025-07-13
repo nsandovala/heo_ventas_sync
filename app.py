@@ -36,21 +36,16 @@ def index():
             ]
         }
 
-        try:
-            response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
-            data = response.json()
+      try:
+    response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
+    data = response.json()
+    print("💬 Respuesta JSON:", data)
 
-            if "choices" in data:
-                heo_response = data["choices"][0]["message"]["content"]
-            elif "error" in data:
-                heo_response = f"⚠️ Error de API: {data['error'].get('message', str(data['error']))}"
-            else:
-                heo_response = "⚠️ Error inesperado: No se encontró el campo 'choices'."
+    message = data.get("choices", [{}])[0].get("message", {}).get("content")
+    heo_response = message or "⚠️ La IA no devolvió contenido."
+except Exception as e:
+    heo_response = f"⚠️ Excepción: {str(e)}"
 
-        except Exception as e:
-            heo_response = f"⚠️ Excepción: {str(e)}"
-
-    return render_template("index.html", heo_response=heo_response)
 
 if __name__ == "__main__":
     app.run(debug=True)
