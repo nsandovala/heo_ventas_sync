@@ -36,17 +36,16 @@ def index():
             ]
         }
 
-      try:
-    response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
-    data = response.json()
-    print("💬 Respuesta JSON:", data)
+        try:
+            response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
+            data = response.json()
+            print("🧠 Respuesta JSON:", data)
+            message = data.get("choices", [{}])[0].get("message", {}).get("content")
+            heo_response = message if message else "⚠️ La IA no devolvió contenido."
+        except Exception as e:
+            heo_response = f"⚠️ Excepción: {str(e)}"
 
-    message = data.get("choices", [{}])[0].get("message", {}).get("content")
-    heo_response = message or "⚠️ La IA no devolvió contenido."
-except Exception as e:
-    heo_response = f"⚠️ Excepción: {str(e)}"
-
+    return render_template("index.html", reply=heo_response)
 
 if __name__ == "__main__":
     app.run(debug=True)
-
