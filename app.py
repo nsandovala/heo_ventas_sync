@@ -29,12 +29,14 @@ def index():
             "temperature": TEMPERATURE
         }
         try:
-            response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
-            reply = response.json()["choices"][0]["message"]["content"]
-        except Exception as e:
-            reply = f"⚠️ Error en la respuesta: {e}"
-    return render_template("index.html", reply=reply)
-
+    response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
+    data = response.json()
+    if "choices" in data:
+        reply = data["choices"][0]["message"]["content"]
+    else:
+        reply = f"⚠️ Error: {data.get('error', 'Sin campo choices en la respuesta')}"
+except Exception as e:
+    reply = f"⚠️ Excepción en la respuesta: {str(e)}"
 
 if __name__ == "__main__":
     app.run(debug=True)
