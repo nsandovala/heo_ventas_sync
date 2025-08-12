@@ -1,12 +1,52 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Chat futurista</h2>
-<form method="post" class="chat-form">
-  <input type="text" name="user_input" placeholder="¿Qué te tinca hoy?" required />
-  <button type="submit">Enviar</button>
-</form>
-{% if reply %}
-<div class="respuesta"><p>{{ reply|safe }}</p></div>
-{% endif %}
-<div class="links"><a href="{{ url_for('flujo_pedido') }}">Ir a Pedido</a></div>
-{% endblock %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chat con HEO</title>
+  <link rel="stylesheet" href="/static/css/chat.css">
+</head>
+<body>
+  <header class="top">
+    <a href="/" class="back">← Volver</a>
+    <h1>Chat con HEO</h1>
+  </header>
+
+  <main id="feed" class="feed"></main>
+
+  <form id="form" class="bar">
+    <input id="msg" autocomplete="off" placeholder="Escríbele a HEO…">
+    <button>Enviar</button>
+  </form>
+
+  <script>
+    const feed = document.getElementById('feed');
+    const form = document.getElementById('form');
+    const msg = document.getElementById('msg');
+
+    function bubble(text, mine=false){
+      const el = document.createElement('div');
+      el.className = 'bubble ' + (mine?'mine':'heo');
+      el.textContent = text;
+      feed.appendChild(el);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    bubble("Hola, soy HEO 🤖. ¿Te antoja algo con pan batido hoy?");
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const text = msg.value.trim();
+      if(!text) return;
+      bubble(text, true);
+      msg.value = '';
+      const r = await fetch('/api/chat', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({message:text})
+      });
+      const data = await r.json();
+      bubble(data.reply || '…');
+    });
+  </script>
+</body>
+</html>
