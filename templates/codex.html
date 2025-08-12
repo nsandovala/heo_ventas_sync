@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Códex Loop (5 porqués)</h2>
+<form method="post" class="codex-form">
+  <label>Problema</label>
+  <input name="problema" placeholder="Ej: bajan ventas al mediodía"/>
+  <div class="grid2">
+    <input name="p1" placeholder="¿Por qué 1?"/>
+    <input name="p2" placeholder="¿Por qué 2?"/>
+    <input name="p3" placeholder="¿Por qué 3?"/>
+    <input name="p4" placeholder="¿Por qué 4?"/>
+    <input name="p5" placeholder="¿Por qué 5?"/>
+  </div>
+  <label>Próxima acción</label>
+  <input name="accion" placeholder="Ej: activar combo horas valle"/>
+  <label>Métrica</label>
+  <input name="metrica" placeholder="Ej: ventas_dia"/>
+  <button type="submit">Generar resumen</button>
+</form>
+{% if resumen %}
+<div class="respuesta">{{ resumen|safe }}</div>
+{% endif %}
+{% endblock %}

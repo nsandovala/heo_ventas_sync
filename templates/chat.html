@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Chat futurista</h2>
+<form method="post" class="chat-form">
+  <input type="text" name="user_input" placeholder="¿Qué te tinca hoy?" required />
+  <button type="submit">Enviar</button>
+</form>
+{% if reply %}
+<div class="respuesta"><p>{{ reply|safe }}</p></div>
+{% endif %}
+<div class="links"><a href="{{ url_for('flujo_pedido') }}">Ir a Pedido</a></div>
+{% endblock %}

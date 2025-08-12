@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": "shenlong",
+      "nombre": "Shenlong Smash en pan batido",
+      "precio": null
+    },
+    {
+      "id": "clasica",
+      "nombre": "Clásica cheddar en pan batido",
+      "precio": null
+    },
+    {
+      "id": "veggie",
+      "nombre": "Veggie pan batido",
+      "precio": null
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>HEO Ventas Sync</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/negro_mate_blanco.css') }}">
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{{ url_for('pantalla_bienvenida') }}">Inicio</a>
+      <a href="{{ url_for('chat_geo') }}">Chat</a>
+      <a href="{{ url_for('flujo_pedido') }}">Pedido</a>
+      <a href="{{ url_for('tarjeta_fidelizacion') }}">Tarjeta</a>
+      <a href="{{ url_for('juegos_retro') }}">Juegos</a>
+      <a href="{{ url_for('modulo_codex') }}">Códex</a>
+      <a href="{{ url_for('dashboard_operador') }}">Dashboard</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer><small>Portal TBB · Modo Códex · Valparaíso</small></footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "sellos": 2,
+  "meta": 10,
+  "codigos_validos": [
+    "TBB123",
+    "TBB456",
+    "TBB789"
+  ]
+}

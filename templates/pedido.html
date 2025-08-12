@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Pedido rápido</h2>
+<form method="post" class="pedido-form">
+  <label>Producto</label>
+  <input name="producto" placeholder="Shenlong Smash en pan batido" required/>
+  <label>Extras</label>
+  <input name="extras" placeholder="cheddar extra, pepinillos"/>
+  <label>Método de entrega</label>
+  <select name="entrega">
+    <option value="retiro">Retiro</option>
+    <option value="delivery">Delivery</option>
+  </select>
+  <label>Dirección (si delivery)</label>
+  <input name="direccion" placeholder="Calle, número, depto"/>
+  <button type="submit">Enviar por WhatsApp</button>
+</form>
+{% endblock %}

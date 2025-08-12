@@ -1,0 +1,1 @@
+document.addEventListener('keydown',e=>{if(e.key==='/'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA'){const i=document.querySelector('input[name="user_input"]');if(i){i.focus();}}});
