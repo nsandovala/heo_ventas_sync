@@ -1,0 +1,16 @@
+:root{
+  --bg:#0a0a0a; --ink:#fff; --mine:#25D366; --heo:#2a2f32;
+}
+*{box-sizing:border-box} body{margin:0; background:var(--bg); color:var(--ink);
+font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text",Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+.top{position:sticky; top:0; background:#111; padding:12px 16px; display:flex; gap:12px; align-items:center; border-bottom:1px solid #222}
+.top h1{margin:0; font-size:16px}
+.back{color:#9aa0a6; text-decoration:none}
+.feed{height:calc(100dvh - 112px); overflow:auto; padding:16px; display:flex; flex-direction:column; gap:10px}
+.bubble{max-width:72ch; padding:10px 12px; border-radius:14px; line-height:1.35; white-space:pre-wrap}
+.bubble.heo{background:var(--heo); color:#e8eaed; border-top-left-radius:4px}
+.bubble.mine{background:var(--mine); color:#001b07; align-self:flex-end; border-top-right-radius:4px}
+.bar{position:fixed; bottom:0; left:0; right:0; display:flex; gap:8px; padding:10px; background:#111; border-top:1px solid #222}
+.bar input{flex:1; padding:12px 14px; border-radius:10px; border:1px solid #2a2a2a; background:#0f0f0f; color:#e8eaed}
+.bar button{padding:12px 16px; border-radius:10px; border:1px solid #2a2a2a; background:#1a1a1a; color:#e8eaed; cursor:pointer}
+.bar button:hover{background:#222}
