@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% block title %}Portal TBB — HEO Ventas Sync{% endblock %}
 {% block content %}
-<section class="hero">
-  <h1>🌀 Portal TBB — HEO Ventas Sync</h1>
-  <p>Negro mate, claro y directo. Vende mejor, con menos fricción.</p>
-  <a class="btn" href="{{ url_for('chat_geo') }}">Abrir chat</a>
-</section>
+  <section class="hero">
+    <h1>Bienvenido a TBB</h1>
+    <p>Asistente HEO listo para ayudarte a vender mejor con menos fricción.</p>
+    <a class="btn" href="{{ url_for('chat_geo') }}">💬 Chatear con HEO</a>
+  </section>
 {% endblock %}
