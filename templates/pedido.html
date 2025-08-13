@@ -1,18 +1,32 @@
 {% extends "base.html" %}
+{% block title %}Pedido rápido{% endblock %}
 {% block content %}
-<h2>Pedido rápido</h2>
-<form method="post" class="pedido-form">
-  <label>Producto</label>
-  <input name="producto" placeholder="Shenlong Smash en pan batido" required/>
-  <label>Extras</label>
-  <input name="extras" placeholder="cheddar extra, pepinillos"/>
-  <label>Método de entrega</label>
-  <select name="entrega">
-    <option value="retiro">Retiro</option>
-    <option value="delivery">Delivery</option>
-  </select>
-  <label>Dirección (si delivery)</label>
-  <input name="direccion" placeholder="Calle, número, depto"/>
-  <button type="submit">Enviar por WhatsApp</button>
-</form>
+  <h2>Pedido rápido</h2>
+  <form method="POST" style="display:grid; gap:12px; max-width:720px;">
+    <div>
+      <label>Producto</label>
+      <input list="productos" name="producto" placeholder="Escribe y elige…" style="width:100%; height:44px; border-radius:12px; border:1px solid #2a2d31; background:#0d0f12; color:#fff; padding:0 12px;">
+      <datalist id="productos">
+        {% for item in menu.productos %}
+          <option value="{{ item }}">{{ item }}</option>
+        {% endfor %}
+      </datalist>
+    </div>
+    <div>
+      <label>Extras</label>
+      <input name="extras" placeholder="cheddar extra, pepinillos" style="width:100%; height:44px; border-radius:12px; border:1px solid #2a2d31; background:#0d0f12; color:#fff; padding:0 12px;">
+    </div>
+    <div>
+      <label>Método de entrega</label>
+      <select name="entrega" style="width:100%; height:44px; border-radius:12px; border:1px solid #2a2d31; background:#0d0f12; color:#fff; padding:0 12px;">
+        <option value="retiro">Retiro</option>
+        <option value="delivery">Delivery</option>
+      </select>
+    </div>
+    <div>
+      <label>Dirección (si delivery)</label>
+      <input name="direccion" placeholder="Calle, número, depto" style="width:100%; height:44px; border-radius:12px; border:1px solid #2a2d31; background:#0d0f12; color:#fff; padding:0 12px;">
+    </div>
+    <button class="btn" type="submit">Enviar por WhatsApp</button>
+  </form>
 {% endblock %}
