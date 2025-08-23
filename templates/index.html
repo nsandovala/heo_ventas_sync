@@ -1,30 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Portal TBB{% endblock %}
-{% block body %}
-<main class="portal">
-  <header class="brand">
-    <span class="logo">🍔</span>
-    <h1 class="tbb">TBB</h1>
-  </header>
-
-  <h2 class="welcome">WELCOME!</h2>
-  <p class="sub">COMER, JUGAR & CREAR</p>
-
-  <button id="btnStart" class="btn-start">START MENU</button>
-
-  <!-- Minijuego “easter egg” que aparece solo -->
-  <section id="eggWrap" class="egg hide" aria-hidden="true">
-    <div class="egg-label">Toca para jugar</div>
-    <canvas id="tbbGame" width="640" height="200" class="game"></canvas>
-  </section>
-
-  <!-- Accesos públicos (sin dashboard) -->
-  <nav class="quick hide" id="quickNav">
-    <a href="{{ url_for('flujo_pedido') }}" class="chip">Pedidos</a>
-    <a href="{{ url_for('juegos_retro') }}" class="chip">Trivias</a>
-    <a href="{{ url_for('tarjeta_fidelizacion') }}" class="chip">Tarjeta</a>
-    <a href="/pagos" class="chip">Pagos</a>
-    <a href="/menu" class="chip">Menú rápido</a>
-  </nav>
-</main>
+{% block title %}TBB · Start Menu{% endblock %}
+{% block content %}
+<section class="portal-hero">
+  <div class="portal-card">
+    <div class="logo">🍔 TBB</div>
+    <h1>WELCOME!</h1>
+    <p class="sub">COMER, JUGAR & CREAR</p>
+    <a class="btn big" href="{{ url_for('chat_geo') }}">START MENU</a>
+  </div>
+</section>
 {% endblock %}
