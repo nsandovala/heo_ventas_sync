@@ -4,12 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{% block title %}TBB Portal{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}"> <!-- retro al final -->
+
+  {% set v = '20250823-1' %}  {# <- cambia este valor si no te toma cambios #}
+
+  <!-- Si usas themes.css, va primero -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}?v={{v}}">
+  <!-- Nuestro skin retro SIEMPRE al final -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}?v={{v}}">
 </head>
 <body class="tbb-bg">
   {% block body %}{% endblock %}
- <script src="{{ url_for('static', filename='js/portal.js') }}"></script>
+
+  <script defer src="{{ url_for('static', filename='js/portal.js') }}?v={{v}}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>
