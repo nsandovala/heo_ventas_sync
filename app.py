@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
 import os, requests, json, urllib.parse
+from functools import wraps
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -7,6 +8,17 @@ load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = os.getenv("HEO_MODEL", "mistralai/mistral-7b-instruct")
+
+# --- Seguridad simple para admin (token por query) ---
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "")  # ponlo en Render > Environment
+
+def require_admin(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if ADMIN_TOKEN and request.args.get("token") != ADMIN_TOKEN:
+            abort(403)
+        return f(*args, **kwargs)
+    return wrapper
 
 app = Flask(__name__)
 
@@ -58,6 +70,8 @@ def load_json(path:str):
 
 def save_json(path:str, payload:dict):
     with open(path,"w",encoding="utf-8") as f: json.dump(payload,f,ensure_ascii=False,indent=2)
+
+# ---------------- Rutas públicas ----------------
 
 @app.route("/", methods=["GET"])
 def pantalla_bienvenida():
@@ -119,14 +133,20 @@ def modulo_codex():
         """
     return render_template("codex.html", resumen=resumen)
 
-@app.route("/dashboard")
+# ---------------- Admin (protegido) ----------------
+
+@app.route("/admin/dashboard")
+@require_admin
 def dashboard_operador():
     ventas = load_json("data/mock_ventas.json")
     return render_template("dashboard.html", ventas=ventas)
 
+# API pública/privada según decidas después
 @app.get("/api/ventas-dia")
 def api_ventas_dia():
     return jsonify(load_json("data/mock_ventas.json"))
+
+# ---------------------------------------------------
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
