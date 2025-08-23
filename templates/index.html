@@ -1,9 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Portal TBB — HEO Ventas Sync{% endblock %}
-{% block content %}
-  <section class="hero">
-    <h1>Bienvenido a TBB</h1>
-    <p>Asistente HEO listo para ayudarte a vender mejor con menos fricción.</p>
-    <a class="btn" href="{{ url_for('chat_geo') }}">💬 Chatear con HEO</a>
+{% block title %}Portal TBB{% endblock %}
+{% block body %}
+<main class="portal">
+  <header class="brand">
+    <span class="logo">🍔</span>
+    <h1 class="tbb">TBB</h1>
+  </header>
+
+  <h2 class="welcome">WELCOME!</h2>
+  <p class="sub">COMER, JUGAR & CREAR</p>
+
+  <button id="btnStart" class="btn-start">START MENU</button>
+
+  <!-- Minijuego “easter egg” que aparece solo -->
+  <section id="eggWrap" class="egg hide" aria-hidden="true">
+    <div class="egg-label">Toca para jugar</div>
+    <canvas id="tbbGame" width="640" height="200" class="game"></canvas>
   </section>
+
+  <nav class="quick hide" id="quickNav">
+    <a href="{{ url_for('pedido') }}" class="chip">Pedidos</a>
+    <a href="{{ url_for('juegos') }}" class="chip">Trivias</a>
+    <a href="/pagos" class="chip">Pagos</a>
+    <a href="/menu" class="chip">Menú rápido</a>
+  </nav>
+</main>
 {% endblock %}
