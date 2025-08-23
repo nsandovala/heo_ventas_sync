@@ -1,26 +1,14 @@
-<!-- templates/base.html -->
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{% block title %}HEO Ventas Sync{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}?v=2">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}TBB Portal{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
 </head>
-<body>
-  <div class="container">
-    <div class="nav">
-      <a href="{{ url_for('pantalla_bienvenida') }}">Inicio</a>
-      <a href="{{ url_for('chat_geo') }}">Chat</a>
-      <a href="{{ url_for('flujo_pedido') }}">Pedido</a>
-      <a href="{{ url_for('tarjeta_fidelizacion') }}">Tarjeta</a>
-      <a href="{{ url_for('modulo_codex') }}">Códex</a>
-      <a href="{{ url_for('dashboard_operador') }}">Dashboard</a>
-    </div>
-    {% block content %}{% endblock %}
-    <div class="footer">
-      Portal TBB · Valparaíso · <a href="{{ url_for('chat_geo') }}">Hablar con HEO</a>
-    </div>
-  </div>
+<body class="tbb-bg">
+  {% block body %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/portal.js') }}"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>
