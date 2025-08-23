@@ -1,39 +1,100 @@
+/* ---- RESET PIXEL RETRO ---- */
 :root{
-  --c0:#061b11; --c1:#0f3a22; --c2:#145a33; --c3:#1b7d46; --c4:#27a45c;
-  --txt:#f3d97a; --txt-dim:#d9c56b; --shadow:#032512;
-  font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+  --bg0:#0a1f15; --bg1:#0d2d1c; --bg2:#114027; --bg3:#155233; --bg4:#1a6a42;
+  --ringA:#0f7a4a; --ringB:#0c5f3a; --ringC:#0a4b2d; --ringD:#083a22;
+  --floor1:#1a6a42; --floor2:#165a38; --floor3:#124b2f;
+  --txt:#f2d372; --txt-dim:#e8c964; --accent:#ffb84a;
+  --btn:#1e7b4a; --btn-hi:#2aa361; --shadow:#062a17;
+  --grid: 8px;
+  font-family: "Press Start 2P", ui-monospace, Menlo, Monaco, "Courier New", monospace;
 }
 *{box-sizing:border-box}
+html,body{height:100%}
 body.tbb-bg{
-  margin:0; min-height:100vh; color:var(--txt);
-  background: radial-gradient(circle at 50% 35%, var(--c3), var(--c2) 35%, var(--c1) 65%, var(--c0));
+  margin:0; color:var(--txt);
+  /* Fondo con anillos concéntricos “portal” + degradé */
+  background:
+    radial-gradient(circle at 50% 30%,
+      var(--ringA) 0%,
+      var(--ringB) 20%,
+      var(--ringC) 40%,
+      var(--ringD) 60%,
+      var(--bg1) 75%,
+      var(--bg0) 100%);
+  image-rendering: pixelated;
 }
-.portal{max-width:720px;margin:0 auto;padding:32px 16px;text-align:center}
-.brand{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:12px}
+
+/* ---- LAYOUT ---- */
+.portal{max-width: 540px; margin:0 auto; padding: 32px 18px 80px; text-align:center}
+.brand{display:flex; align-items:center; justify-content:center; gap:12px; margin-top:6px}
 .logo{filter: drop-shadow(0 2px 0 #000)}
 .tbb{
-  margin:0; letter-spacing:4px; padding:6px 10px;
-  color:var(--txt); text-shadow:2px 2px 0 #000, 0 0 14px #0f0;
-  border:2px solid var(--txt); background:linear-gradient(180deg, #134b2c, #0d3a23);
-  box-shadow:0 0 0 4px #103421, 0 8px 0 var(--shadow);
+  margin:0;
+  padding:10px 14px; border:3px solid #f5e7a3; border-radius:6px;
+  color:#f5e7a3; letter-spacing:6px;
+  background: linear-gradient(#165b36,#0f4026);
+  box-shadow: 0 3px 0 #000, 0 10px 0 var(--shadow);
 }
-.welcome{margin:28px 0 8px; font-size:40px; letter-spacing:3px;
-  text-shadow:3px 3px 0 #000, 0 0 12px #2cff6b;}
-.sub{margin:0 0 24px; color:var(--txt-dim); letter-spacing:2px}
+
+/* ---- TITULOS ---- */
+.welcome{
+  margin:26px 0 6px;
+  font-size: clamp(38px, 8vw, 68px);
+  color:#ffc258;
+  text-shadow: 4px 4px 0 #000, 0 0 14px #1eff6b55;
+  letter-spacing: 3px;
+}
+.sub{
+  margin: 0 0 24px; color:var(--txt); opacity:.95; letter-spacing: 3px;
+}
+
+/* ---- BOTON START ---- */
 .btn-start{
-  cursor:pointer; font-weight:800; letter-spacing:2px;
-  padding:16px 28px; border:3px solid var(--txt); color:var(--txt);
-  background:linear-gradient(#165c35,#0f4729); border-radius:6px;
-  box-shadow:0 6px 0 #052e1a, 0 0 12px #1aff5e55; transition:transform .05s;
+  cursor:pointer; display:inline-block; margin-top:10px;
+  font-weight:900; letter-spacing:3px; font-size:16px;
+  padding:18px 34px; color:#ffeaa7;
+  border:4px solid #ffeaa7; border-radius:10px;
+  background: linear-gradient(#1a6a42,#0f4a2b);
+  box-shadow: 0 6px 0 #052e1a, 0 0 18px #1aff5e55;
+  transition: transform .06s ease, box-shadow .06s ease;
 }
-.btn-start:active{ transform:translateY(3px); box-shadow:0 3px 0 #052e1a }
-.egg{ margin:26px auto 0; max-width:680px; padding:8px; border:2px dashed #3bd47a88;
-  border-radius:10px; background:#0a2315aa; position:relative; }
+.btn-start:active{ transform:translateY(3px); box-shadow: 0 3px 0 #052e1a }
+
+/* ---- EASTER EGG / GAME WRAP ---- */
+.egg{
+  width:100%; max-width:720px; margin:28px auto 0;
+  padding:10px; border:2px dashed #3bd47a88; border-radius:10px;
+  background: #0a2315cc; position:relative; opacity:1; transition:opacity .35s ease;
+}
+.egg.hide{ opacity:0; pointer-events:none }
 .egg-label{
   position:absolute; top:-12px; left:12px; font-size:12px; padding:2px 8px;
   background:#0a2315; border:1px solid #3bd47a; border-radius:4px; color:#bdf8cf;
 }
-.game{ width:100%; height:auto; image-rendering: pixelated; background:linear-gradient(#0c2b19,#0a2315); }
-.chip{ display:inline-block; margin:8px; padding:10px 14px; border:1px solid var(--txt);
-  color:var(--txt); text-decoration:none; background:#0c3b23; border-radius:6px; }
-.hide{ display:none; }
+.game{
+  display:block; width:100%; height:auto; aspect-ratio: 3.2 / 1;
+  image-rendering: pixelated; background: linear-gradient(#0c2b19,#0a2315);
+  border:2px solid #184c31; box-shadow: inset 0 0 0 6px #0c2116;
+}
+
+/* ---- PIXEL FLOOR DECOR (opcional: abajo de todo) ---- */
+body.tbb-bg::after{
+  content:""; position:fixed; left:0; right:0; bottom:0; height:22vh; pointer-events:none;
+  background:
+    linear-gradient(0deg, transparent 0%, #0a2315 100%),
+    repeating-linear-gradient(135deg, var(--floor1) 0 14px, var(--floor2) 14px 28px, var(--floor3) 28px 42px);
+  mix-blend-mode: normal; opacity:.5;
+}
+
+/* Chips si los muestras más adelante */
+.chip{
+  display:inline-block; margin:8px; padding:10px 14px;
+  border:1px solid var(--txt); border-radius:6px;
+  text-decoration:none; color:var(--txt); background:#0c3b23;
+}
+
+@media (max-width: 420px){
+  .portal{ padding-top: 22px }
+  .tbb{ letter-spacing:4px; padding:8px 12px }
+  .btn-start{ width:84%; font-size:15px; padding:16px 0 }
+}
