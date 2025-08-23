@@ -3,95 +3,109 @@
   const eggWrap  = document.getElementById('eggWrap');
   const canvas   = document.getElementById('tbbGame');
 
-  // --- Navegación START ---
-  if (btnStart) btnStart.addEventListener('click', () => {
-    window.location.href = "/pedido";  // también tienes /flujo_pedido con url_for si lo prefieres
-  });
+  // START → Pedidos
+  btnStart && btnStart.addEventListener('click', () => { window.location.href = "/pedido"; });
 
-  // --- Easter egg: aparece ocasionalmente sin botón ---
-  let eggTimer = null;
-  function appearEgg() {
+  // Mostrar huevo aleatorio
+  function appearEgg(){
     if (!eggWrap || !canvas) return;
     if (!eggWrap.classList.contains('hide')) return;
-    if (Math.random() < 0.65) {
+    if (Math.random() < 0.65){
       eggWrap.classList.remove('hide');
-      eggWrap.setAttribute('aria-hidden', 'false');
+      eggWrap.setAttribute('aria-hidden','false');
       initGame(canvas);
     }
   }
-  // primer intento y reintentos
-  setTimeout(appearEgg, 3000 + Math.random()*4000);
-  eggTimer = setInterval(appearEgg, 45000 + Math.random()*45000);
+  setTimeout(appearEgg, 2200 + Math.random()*1800);
+  setInterval(appearEgg, 50000 + Math.random()*30000);
 
-  // Ocultar huevo: doble tap o long-press (móvil)
+  // Ocultar con doble tap o long-press (móvil)
   eggWrap && eggWrap.addEventListener('dblclick', hideEgg);
-  if (eggWrap) {
-    let pressTimer;
-    eggWrap.addEventListener('touchstart', () => {
-      pressTimer = setTimeout(hideEgg, 600);
-    });
-    eggWrap.addEventListener('touchend', () => clearTimeout(pressTimer));
+  if (eggWrap){
+    let timer; eggWrap.addEventListener('touchstart', ()=> timer=setTimeout(hideEgg, 600));
+    eggWrap.addEventListener('touchend', ()=> clearTimeout(timer));
   }
-  function hideEgg(){
-    stopGame();
-    eggWrap.classList.add('hide');
-    eggWrap.setAttribute('aria-hidden','true');
-  }
+  function hideEgg(){ stopGame(); eggWrap.classList.add('hide'); eggWrap.setAttribute('aria-hidden','true'); }
 
-  /* ---------------- Minijuego dino-burger ---------------- */
+  /* ------------------- GAME ------------------- */
   let raf=null, ctx, W, H, t, playing=false, burger, obstacles=[], score, gravity, jumpV, groundY;
   let boundInput = null;
 
+  // Canvas responsivo manteniendo pixel-art
+  function sizeCanvas(cv){
+    const targetW = Math.min(640, cv.parentElement.clientWidth - 24);
+    const targetH = Math.round(targetW / 3.2); // aspect 3.2:1
+    cv.width  = targetW;
+    cv.height = targetH;
+  }
+
   function initGame(cv){
-    if (!cv || playing || raf !== null) { drawIntro(); return; } // evita doble init
+    sizeCanvas(cv);
     ctx = cv.getContext('2d');
     W = cv.width; H = cv.height;
-    groundY = H - 24; gravity = 0.65; jumpV = -10;
+    groundY = H - 24;
+
+    // FÍSICA MÁS LENTA Y SUAVE
+    gravity = 0.45;         // antes 0.65
+    jumpV   = -8.8;         // salto menos brusco
     t=0; score=0; obstacles=[]; playing=false;
-    burger = {x:60, y:groundY-20, vy:0, s:20, onGround:true};
+    burger = {x: Math.round(W*0.12), y: groundY-20, vy:0, s:20, onGround:true};
+
     drawIntro();
 
     boundInput = handleInput.bind(null);
     cv.addEventListener('pointerdown', boundInput);
+    window.addEventListener('resize', onResize);
+  }
+
+  function onResize(){
+    if(!canvas) return;
+    // resample tamaño pero conserva estado básico
+    const oldH = H;
+    sizeCanvas(canvas);
+    W = canvas.width; H = canvas.height; groundY = H - 24;
+    // recoloca al “suelo”
+    burger.y = Math.min(burger.y, groundY - burger.s);
   }
 
   function handleInput(){
-    if(!playing){ playing = true; loop(); return; }
+    if(!playing){ playing=true; loop(); return; }
     if(burger.onGround){ burger.vy = jumpV; burger.onGround = false; }
   }
 
   function spawnObstacle(){
-    const high = Math.random() < 0.4;
-    const h = high ? 48 : 24;
+    // Menos frecuencia y velocidades más bajas
+    const high = Math.random() < 0.35;
+    const h = high ? 46 : 22;
     const y = high ? groundY - 60 : groundY - h;
-    obstacles.push({x: W + 10, y, w: high ? 18 : 26, h});
+    obstacles.push({x: W + 10, y, w: high ? 16 : 26, h});
   }
 
   function loop(){ raf = requestAnimationFrame(loop); update(); render(); }
   function stopGame(){
     if (raf !== null) cancelAnimationFrame(raf);
-    raf = null; playing = false;
+    raf=null; playing=false;
     if (canvas && boundInput) canvas.removeEventListener('pointerdown', boundInput);
-    boundInput = null;
+    window.removeEventListener('resize', onResize);
+    boundInput=null;
   }
 
   function update(){
-    t++; if (t % 70 === 0) spawnObstacle();
+    t++;
+    // Spawnea cada ~90 frames (lento) con aleatorio
+    if (t % 90 === 0 && Math.random() < 0.9) spawnObstacle();
 
     // Física
     burger.vy += gravity;
     burger.y  += burger.vy;
-    if (burger.y >= groundY - burger.s){
-      burger.y = groundY - burger.s;
-      burger.vy = 0;
-      burger.onGround = true;
-    }
+    if (burger.y >= groundY - burger.s){ burger.y = groundY - burger.s; burger.vy = 0; burger.onGround = true; }
 
-    // Obstáculos
-    obstacles.forEach(o => o.x -= 4 + Math.min(6, score/150));
+    // Obstáculos más lentos, aceleran levemente con score
+    const base = 2.8, accel = Math.min(3.5, score/240);
+    obstacles.forEach(o => o.x -= base + accel);
     if (obstacles.length && obstacles[0].x + obstacles[0].w < 0) obstacles.shift();
 
-    // Colisiones
+    // Colisiones AABB
     for (const o of obstacles){
       if (burger.x < o.x + o.w && burger.x + burger.s > o.x &&
           burger.y < o.y + o.h && burger.y + burger.s > o.y){
@@ -102,18 +116,20 @@
   }
 
   function render(){
+    // fondo
     ctx.fillStyle = '#092414'; ctx.fillRect(0,0,W,H);
+    // piso
     ctx.fillStyle = '#0e3b23'; ctx.fillRect(0, groundY, W, H-groundY);
 
-    // Burger pixel
+    // burger
     ctx.fillStyle = '#f3d97a'; ctx.fillRect(burger.x, burger.y, burger.s, burger.s);
     ctx.fillStyle = '#00000055'; ctx.fillRect(burger.x, burger.y+burger.s-4, burger.s, 4);
 
-    // Obstáculos
+    // obstáculos
     ctx.fillStyle = '#27a45c';
     obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
 
-    // Puntaje
+    // score
     ctx.fillStyle = '#bdf8cf'; ctx.font = '16px monospace';
     ctx.fillText('SCORE ' + score, 10, 18);
   }
@@ -121,23 +137,22 @@
   function drawIntro(){
     ctx.fillStyle='#0a2315'; ctx.fillRect(0,0,W,H);
     ctx.fillStyle='#bdf8cf'; ctx.font='20px monospace';
-    ctx.fillText('HAMBURGUESA RUNNER', 160, 80);
+    ctx.fillText('HAMBURGUESA RUNNER', Math.round(W*0.28), 80);
     ctx.font='14px monospace';
-    ctx.fillText('Toca para saltar. Doble toque o mantener para ocultar.', 80, 110);
+    ctx.fillText('Toca para saltar. Doble toque o mantener para ocultar.', Math.round(W*0.08), 110);
   }
 
   function drawGameOver(){
     ctx.fillStyle='#000000aa'; ctx.fillRect(0,0,W,H);
     ctx.fillStyle='#ffdf88'; ctx.font='22px monospace';
-    ctx.fillText('GAME OVER', 250, 90);
+    ctx.fillText('GAME OVER', Math.round(W*0.38), 90);
     ctx.font='14px monospace';
-    ctx.fillText('Puntaje: ' + score + ' — toca para reintentar', 170, 120);
+    ctx.fillText('Puntaje: ' + score + ' — toca para reintentar', Math.round(W*0.22), 120);
     canvas.addEventListener('pointerdown', ()=>{ initGame(canvas); playing=true; loop(); }, {once:true});
   }
 
-  // Pausa si la pestaña no está visible
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopGame();
-  });
+  // Pausa si la pestaña se oculta
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) stopGame(); });
 
 })();
+
