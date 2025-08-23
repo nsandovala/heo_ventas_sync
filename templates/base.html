@@ -4,11 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{% block title %}TBB Portal{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}"> <!-- retro al final -->
 </head>
 <body class="tbb-bg">
   {% block body %}{% endblock %}
-  <script src="{{ url_for('static', filename='js/portal.js') }}"></script>
+ <script src="{{ url_for('static', filename='js/portal.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>
